@@ -1,0 +1,11 @@
+wget -P /j-archive/ -E -q -nc --random-wait http://www.j-archive.com/showgame.php?game_id={1..X} 
+
+X represents the number of files
+q is quiet
+nc is no clobber (no overwrite)
+P puts it in a directory specified
+E appends .html to files without extensions
+
+
+ for (( n=201; n<=5653 ; ++n)) do wget -q -P /j-archive/ -E http://www.j-archive.com/showgame.php?game_id="$n"; done
+
