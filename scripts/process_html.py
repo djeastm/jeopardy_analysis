@@ -1,11 +1,15 @@
 from bs4 import BeautifulSoup
 import re
+import random
 
 
 def main():
     f = open('output.csv','w')
-    f.write('game_id|show_num|round|category|clue_num|response|text|value|clue_order\n')
-    for num in range(1,301):
+    f.write('game_id|show_num|year|round|category|clue_num|response|text|value|clue_order\n')
+    # Get random sampling from 1 to 5653
+    games = random.sample(range(5653),25)   
+    print(games)
+    for num in games:
         with open("../data/showgame.php@game_id="+str(num)+".html",encoding='utf8') as fp:            
             soup = BeautifulSoup(fp, 'lxml')
             
@@ -14,7 +18,9 @@ def main():
         game_id = str(num)
         show_title = soup.find(id='game_title').string
         show_num = re.search('\d+',show_title).group()
-
+        show_year = show_title[-4:]
+        print(game_id)
+        
         # categories
         cat_tags = soup.find_all('td',class_='category_name')
         categories = []
@@ -40,7 +46,7 @@ def main():
         for clue in clues:
             fj = False;
             blank = False;
-            clue_str = game_id+'|'+show_num+'|'
+            clue_str = game_id+'|'+show_num+'|'+show_year+'|'
 ##            print(clue_str+" "+str(i))
             i = i+1
 
@@ -171,8 +177,8 @@ def main():
                     clue_str = clue_str + clue_order_num.string
     ##                else:
     ##                    print('FJ')                
-    ##            else:
-    ##                fj_str = fj_str + clue_text +',n/a,n/a'
+                else:
+                    clue_str = clue_str +',n/a,n/a'
                     
                 # write clue string to file
                 try:

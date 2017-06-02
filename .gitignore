@@ -1,4 +1,5 @@
 # Mine
+*.res
 *.html
 *.csv
 
