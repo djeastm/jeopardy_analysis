@@ -3,9 +3,10 @@ import re
 
 
 def main():
-    f = open('output.dat','w')
-    for num in range(1,11):
-        with open("data/showgame.php@game_id="+str(num)+".html",encoding='utf8') as fp:            
+    f = open('output.csv','w')
+    f.write('game_id|show_num|round|category|clue_num|response|text|value|clue_order\n')
+    for num in range(1,301):
+        with open("../data/showgame.php@game_id="+str(num)+".html",encoding='utf8') as fp:            
             soup = BeautifulSoup(fp, 'lxml')
             
 
@@ -74,13 +75,23 @@ def main():
 
                     ## Get clue response from js
                     ## (\w*|\s|\'|\.)+
-                    clue_response = re.search(r'onse">.*</em',js_str).group()[6:-4]
-                    # clean clue response of backslashes
-                    clue_response = clue_response.replace('\\','')
-                    # clean clue response of italics
-                    clue_response = clue_response.replace('<i>','')
-                    clue_response = clue_response.replace('</i>','')
-    ##                print(clue_response)
+                    testSoup = BeautifulSoup(js_str, 'lxml')
+                    clue_response = testSoup.find(class_='correct_response')
+                    if len(clue_response.contents) > 1:
+                        text_str = ''
+                        for part in clue_response.strings:
+                            text_str = text_str + part                        
+                        clue_response = str(text_str)
+                    else: 
+                        clue_response = str(clue_response.string)
+
+##                    clue_response = re.search(r'onse">.*</em',js_str).group()[6:-4]
+##                    # clean clue response of backslashes
+##                    clue_response = clue_response.replace('\\','')
+##                    # clean clue response of italics
+##                    clue_response = clue_response.replace('<i>','')
+##                    clue_response = clue_response.replace('</i>','')
+##    ##                print(clue_response)
             else:
                 # it's final jeopardy
 ##                fj = True
@@ -95,15 +106,30 @@ def main():
                 sib = par.find_previous_sibling()
                 div = sib.find('div')
                 js_str = div['onmouseover']
+                
                 ## Get clue response from js
                 ## (\w*|\s|\'|\.)+
-                clue_response = re.search(r'onse\\?">.*</em',js_str).group()[7:-4]
-                # clean clue response of backslashes
+                testSoup = BeautifulSoup(js_str, 'lxml')
+                clue_response = testSoup.find(class_='\\"correct_response\\"')
+                if len(clue_response.contents) > 1:
+                    text_str = ''
+                    for part in clue_response.strings:
+                        text_str = text_str + part                        
+                    clue_response = str(text_str)
+                else: 
+                    clue_response = str(clue_response.string)
+
                 
-                clue_response = clue_response.replace('\\','')
-                # clean clue response of italics
-                clue_response = clue_response.replace('<i>','')
-                clue_response = clue_response.replace('</i>','')                
+                    
+            # clean clue response of backslashes
+            
+            clue_response = clue_response.replace('\\','')
+            # clean clue response of italics
+            clue_response = clue_response.replace('<i>','')
+            clue_response = clue_response.replace('</i>','')                
+
+            # clean out hyperlinks in responses
+            
 
             clue_str = clue_str + clue_response+'|'
             
@@ -148,8 +174,11 @@ def main():
     ##            else:
     ##                fj_str = fj_str + clue_text +',n/a,n/a'
                     
-                # write clue string to file                
-                f.write(clue_str+'\n')
+                # write clue string to file
+                try:
+                    f.write(clue_str+'\n')
+                except UnicodeEncodeError:
+                    pass
         # write fj to file
 ##        f.write(fj_str+'\n')
         
