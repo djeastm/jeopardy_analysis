@@ -180,7 +180,7 @@ def main():
     ##                else:
     ##                    print('FJ')                
                 else:
-                    clue_str = clue_str +',n/a,n/a'
+                    clue_str = clue_str +'n/a|n/a'
                     
                 # write clue string to file
                 try:
