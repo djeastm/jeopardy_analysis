@@ -4,22 +4,35 @@ import random
 
 
 def main():
-    f = open('output.csv','w')
+    f = open('output_5401_5653.csv','w')
     f.write('game_id|show_num|year|round|category|clue_num|response|text|value|clue_order\n')
-    # Get random sampling from 1 to 5653
-    games = random.sample(range(1,5653),25)   
+    # Get random sampling from 1 to 5653 (not including 3576, which was the
+    # second half of 3575)
+    # games = random.sample(range(1,5653),25)   
     
-    for num in games:
+    for num in range(5401,5654):        
         with open("../data/showgame.php@game_id="+str(num)+".html",encoding='utf8') as fp:            
             soup = BeautifulSoup(fp, 'lxml')
             
-
-        # game metadata
-        game_id = str(num)
-        show_title = soup.find(id='game_title').string
-        show_num = re.search('\d+',show_title).group()
-        show_year = show_title[-4:]
         
+        # game metadata
+        game_id = str(num)        
+##        print(game_id)
+        show_title = soup.find(id='game_title')
+
+        # Check for italics in game title ("super jeopardy") Super hacky
+        childCount=0
+        for part in show_title.descendants:
+            childCount = childCount + 1        
+        if childCount>2:            
+            show_title = re.sub('<i.*/i> ','',str(show_title.contents[0]))
+            show_num = re.search('#\d+',show_title).group()
+            show_num = show_num[1:]
+            show_year = show_title[-9:-5]
+        else: 
+            show_title = str(show_title.string)
+            show_num = re.search('\d+',show_title).group()
+            show_year = show_title[-4:]
         
         # categories
         cat_tags = soup.find_all('td',class_='category_name')
@@ -42,24 +55,27 @@ def main():
         # Set up regular clues
         clues = soup.find_all('td', class_='clue')
         
-        i = 1;
+        i = 1        
         for clue in clues:
             fj = False;
+            tb = False;
             blank = False;
             clue_str = game_id+'|'+show_num+'|'+show_year+'|'
 ##            print(clue_str+" "+str(i))
             i = i+1
 
             if clue.find(id='clue_FJ'):
-                fj = True                
+                fj = True
+            elif clue.find(id='clue_TB'):
+                tb = True;
 
             ## Parse javascript for correct clue response            
-            if not fj:
+            if not fj and not tb:
                 # check for blank
                 if len(clue.contents)==1:
                     blank = True;
                 else:
-                    js = clue.find('div')
+                    js = clue.find('div')                    
                     js_str = js['onmouseover']
                     ## Get clue id, which includes round, category, and clue num
                     ## e.g. clue_J_2_1                
@@ -70,7 +86,7 @@ def main():
                     # fj_category is at index 12
                     if clue_round=='J':
                         clue_cat = str(categories[int(clue_id[2])-1])
-                    elif clue_round=='DJ':
+                    elif clue_round=='DJ':                        
                         clue_cat = str(categories[int(clue_id[2])+5])               
                     else:
                         clue_cat = 'n/a'
@@ -98,11 +114,36 @@ def main():
 ##                    clue_response = clue_response.replace('<i>','')
 ##                    clue_response = clue_response.replace('</i>','')
 ##    ##                print(clue_response)
-            else:
+            elif fj:
                 # it's final jeopardy
 ##                fj = True
                 clue_round = 'FJ'
                 clue_cat = categories[12]
+                clue_num = 'n/a'
+
+                clue_str = clue_str + clue_round+'|'+clue_cat+'|'+clue_num+'|'
+
+                # need to go to parent, then previous sibling, then find the div
+                par = clue.find_parent()
+                sib = par.find_previous_sibling()
+                div = sib.find('div')
+                js_str = div['onmouseover']
+                
+                ## Get clue response from js
+                ## (\w*|\s|\'|\.)+
+                testSoup = BeautifulSoup(js_str, 'lxml')
+                clue_response = testSoup.find(class_='\\"correct_response\\"')
+                if len(clue_response.contents) > 1:
+                    text_str = ''
+                    for part in clue_response.strings:
+                        text_str = text_str + part                        
+                    clue_response = str(text_str)
+                else: 
+                    clue_response = str(clue_response.string)
+            else:
+                #it's a tiebreaker
+                clue_round = 'TB'
+                clue_cat = categories[13]
                 clue_num = 'n/a'
 
                 clue_str = clue_str + clue_round+'|'+clue_cat+'|'+clue_num+'|'
@@ -159,7 +200,7 @@ def main():
                     
                 clue_str = clue_str + clue_text +'|'           
             
-                if not fj:
+                if not fj and not tb:
                     ## get clue value for regular clues and placeholders for others
                     clue_value = clue.find(class_='clue_value')
                     if clue_value:
