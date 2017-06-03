@@ -7,8 +7,8 @@ def main():
     f = open('output.csv','w')
     f.write('game_id|show_num|year|round|category|clue_num|response|text|value|clue_order\n')
     # Get random sampling from 1 to 5653
-    games = random.sample(range(5653),25)   
-    print(games)
+    games = random.sample(range(1,5653),25)   
+    
     for num in games:
         with open("../data/showgame.php@game_id="+str(num)+".html",encoding='utf8') as fp:            
             soup = BeautifulSoup(fp, 'lxml')
@@ -19,7 +19,7 @@ def main():
         show_title = soup.find(id='game_title').string
         show_num = re.search('\d+',show_title).group()
         show_year = show_title[-4:]
-        print(game_id)
+        
         
         # categories
         cat_tags = soup.find_all('td',class_='category_name')
@@ -146,16 +146,18 @@ def main():
             # to unicode
 
             if not blank:
-                if len(clue_text.contents) > 1:
-                    text_str = ''
-                    for part in clue_text.strings:
+                if len(clue_text.contents) > 1:                    
+                    text_str = ''                    
+                    for part in clue_text.strings:  
                         text_str = text_str + part                        
                     clue_text = str(text_str)
                 else: 
                     clue_text = str(clue_text.string)
 
+                if 'Clue Crew' in clue_text:
+                    clue_text = re.sub(r'\(.*\) +','', clue_text)
+                    
                 clue_str = clue_str + clue_text +'|'           
-
             
                 if not fj:
                     ## get clue value for regular clues and placeholders for others
