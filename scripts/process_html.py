@@ -4,13 +4,15 @@ import random
 
 
 def main():
-    f = open('output_5401_5653.csv','w')
-    f.write('game_id|show_num|year|round|category|clue_num|response|text|value|clue_order\n')
+    f = open('output_1_5653.csv','w')
+    f.write('game_id|*|show_num|*|year|*|round|*|category|*|clue_num|*|response|*|text|*|value|*|clue_order\n')
     # Get random sampling from 1 to 5653 (not including 3576, which was the
     # second half of 3575)
     # games = random.sample(range(1,5653),25)   
     
-    for num in range(5401,5654):        
+    for num in range(1,5654):
+        if num == 3576:
+            continue
         with open("../data/showgame.php@game_id="+str(num)+".html",encoding='utf8') as fp:            
             soup = BeautifulSoup(fp, 'lxml')
             
@@ -60,7 +62,7 @@ def main():
             fj = False;
             tb = False;
             blank = False;
-            clue_str = game_id+'|'+show_num+'|'+show_year+'|'
+            clue_str = game_id+'|*|'+show_num+'|*|'+show_year+'|*|'
 ##            print(clue_str+" "+str(i))
             i = i+1
 
@@ -93,7 +95,7 @@ def main():
                         
                     clue_num = str(clue_id[3])
     ##                print(clue_round+" "+clue_cat+" "+clue_num)                    
-                    clue_str = clue_str + clue_round+'|'+clue_cat+'|'+clue_num+'|'
+                    clue_str = clue_str + clue_round+'|*|'+clue_cat+'|*|'+clue_num+'|*|'
 
                     ## Get clue response from js
                     ## (\w*|\s|\'|\.)+
@@ -121,7 +123,7 @@ def main():
                 clue_cat = categories[12]
                 clue_num = 'n/a'
 
-                clue_str = clue_str + clue_round+'|'+clue_cat+'|'+clue_num+'|'
+                clue_str = clue_str + clue_round+'|*|'+clue_cat+'|*|'+clue_num+'|*|'
 
                 # need to go to parent, then previous sibling, then find the div
                 par = clue.find_parent()
@@ -146,7 +148,7 @@ def main():
                 clue_cat = categories[13]
                 clue_num = 'n/a'
 
-                clue_str = clue_str + clue_round+'|'+clue_cat+'|'+clue_num+'|'
+                clue_str = clue_str + clue_round+'|*|'+clue_cat+'|*|'+clue_num+'|*|'
 
                 # need to go to parent, then previous sibling, then find the div
                 par = clue.find_parent()
@@ -178,7 +180,7 @@ def main():
             # clean out hyperlinks in responses
             
 
-            clue_str = clue_str + clue_response+'|'
+            clue_str = clue_str + clue_response+'|*|'
             
             ## Get clue text
             clue_text = clue.find(class_='clue_text')                
@@ -198,21 +200,21 @@ def main():
                 if 'Clue Crew' in clue_text:
                     clue_text = re.sub(r'\(.*\) +','', clue_text)
                     
-                clue_str = clue_str + clue_text +'|'           
+                clue_str = clue_str + clue_text +'|*|'           
             
                 if not fj and not tb:
                     ## get clue value for regular clues and placeholders for others
                     clue_value = clue.find(class_='clue_value')
                     if clue_value:
-                        clue_str = clue_str + clue_value.string + '|'
+                        clue_str = clue_str + clue_value.string + '|*|'
                     elif clue.find(class_='clue_value_daily_double'):
                         # it might be a daily double
-                        clue_str = clue_str + 'DD|'
+                        clue_str = clue_str + 'DD|*|'
     ##                elif clue.find(id='clue_FJ'):
     ##                    print('FJ')
                     else:
                         # it was never chosen
-                        clue_str = clue_str + 'NC|'
+                        clue_str = clue_str + 'NC|*|'
 
                     ## get clue order number
                     clue_order_num = clue.find(class_='clue_order_number')
@@ -221,7 +223,7 @@ def main():
     ##                else:
     ##                    print('FJ')                
                 else:
-                    clue_str = clue_str +'n/a|n/a'
+                    clue_str = clue_str +'n/a|*|n/a'
                     
                 # write clue string to file
                 try:
