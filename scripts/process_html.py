@@ -189,13 +189,19 @@ def main():
             # the string manually, otherwise, convert the NavigableString
             # to unicode
 
-            if not blank:
+            if not blank:                
                 if len(clue_text.contents) > 1:                    
                     text_str = ''                    
                     for part in clue_text.strings:  
                         text_str = text_str + part                        
                     clue_text = str(text_str)
-                else: 
+                elif clue_text.a:
+                    # it's a movie clue
+                    mov_clue_text = ''
+                    for s in clue_text.a.strings:
+                        mov_clue_text = mov_clue_text + str(s) + ' '
+                    clue_text = mov_clue_text                  
+                else:
                     clue_text = str(clue_text.string)
 
                 if 'Clue Crew' in clue_text:
