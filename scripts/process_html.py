@@ -4,14 +4,14 @@ import random
 
 
 def main():
-    f = open('output_100_random_games.csv','w')
+    f = open('output_1_5653.csv','w')
     delim = '~'
     f.write('game_id'+delim+'show_num'+delim+'year'+delim+'round'+delim+'category'+delim+'clue_num'+delim+'response'+delim+'text'+delim+'value'+delim+'clue_order\n')
     # Get random sampling from 1 to 5653 (not including 3576, which was the
     # second half of 3575)
     games = random.sample(range(1,5653),100)   
     
-    for num in games:
+    for num in range(1,5654):
         if num == 3576:
             continue
         with open("../data/showgame.php@game_id="+str(num)+".html",encoding='utf8') as fp:            
@@ -41,15 +41,28 @@ def main():
         cat_tags = soup.find_all('td',class_='category_name')
         categories = []
         for tag in cat_tags:
-            cat_text = ''
-            if len(tag.contents) > 1:
+            cat_text = ''            
+            if len(tag.contents) > 1:                
                 cat_str = ''
                 for part in tag.strings:
                     cat_str = cat_str + part                        
                 cat_text = str(cat_str)
+            elif tag.a:
+                # it's a movie category
+                mov_cat_text = ''
+                for s in tag.a.strings:
+                    mov_cat_text = mov_cat_text + str(s) 
+                cat_text = mov_cat_text
+            elif tag.em:
+                # it's underline category
+                em_cat_text = ''
+                for s in tag.em.strings:
+                    em_cat_text = em_cat_text + str(s)
+                cat_text = em_cat_text
             else: 
                 cat_text = str(tag.string)
-            categories.append(cat_text)        
+            categories.append(cat_text)
+        
 
 ##        # Set up final jeopardy
 ##        fj = soup.find('table', class_='final_round')
@@ -107,6 +120,12 @@ def main():
                         for part in clue_response.strings:
                             text_str = text_str + part                        
                         clue_response = str(text_str)
+                    elif clue_response.i:
+                        # it's an italic response
+                        italic_clue_resp = ''
+                        for s in clue_response.i.strings:
+                            italic_clue_resp = italic_clue_resp + str(s) 
+                        clue_response = italic_clue_resp 
                     else: 
                         clue_response = str(clue_response.string)
 
@@ -139,6 +158,11 @@ def main():
                 if len(clue_response.contents) > 1:
                     text_str = ''
                     for part in clue_response.strings:
+                        text_str = text_str + part                        
+                    clue_response = str(text_str)
+                elif clue_response.i:
+                    text_str = ''
+                    for part in clue_response.i.strings:
                         text_str = text_str + part                        
                     clue_response = str(text_str)
                 else: 
@@ -199,8 +223,8 @@ def main():
                     # it's a movie clue
                     mov_clue_text = ''
                     for s in clue_text.a.strings:
-                        mov_clue_text = mov_clue_text + str(s) + ' '
-                    clue_text = mov_clue_text                  
+                        mov_clue_text = mov_clue_text + str(s) 
+                    clue_text = mov_clue_text                    
                 else:
                     clue_text = str(clue_text.string)
 
