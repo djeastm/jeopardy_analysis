@@ -2,6 +2,10 @@
 *.res
 *.html
 *.csv
+*.properties
+*.ioo
+*.md
+*.dat
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
