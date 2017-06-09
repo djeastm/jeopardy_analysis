@@ -1,0 +1,5 @@
+- Look for years in categories (e.g. Part like it's 1499) and get a list of responses from each year chosen
+- Get master list of categories, then count how many are essentially duplicates (e.g. like Rhyme Time and Time To Rhyme or something like that)
+	- this is basically category_similarity process
+- get cluster labels to be added to original data (extract macro with the example of the max
+- chrome extension that highlights whether wikipedia words were answers to a jeopardy question
