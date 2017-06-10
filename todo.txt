@@ -3,3 +3,5 @@
 	- this is basically category_similarity process
 - get cluster labels to be added to original data (extract macro with the example of the max
 - chrome extension that highlights whether wikipedia words were answers to a jeopardy question
+- extension that gives the probability that a page contains something likely to be a jeopardy question
+- in a database, be able to ask "how long ago since a particular person/place/thing was a response?"
