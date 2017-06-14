@@ -4,15 +4,17 @@ import random
 
 
 def main():
-    f = open('output_1_5653.csv','w')
+    f = open('output_1_5676.csv','w')
     delim = '~'
-    f.write('game_id'+delim+'show_num'+delim+'year'+delim+'round'+delim+'category'+delim+'clue_num'+delim+'response'+delim+'text'+delim+'value'+delim+'clue_order'+delim+'id\n')
-    # Get random sampling from 1 to 5653 (not including 3576, which was the
+    f.write('game_id'+delim+'show_num'+delim+'year'+delim+'round'+delim+'category'+
+            delim+'clue_num'+delim+'response'+delim+'text'+delim+'value'+delim+'clue_order'+
+            delim+'incorrect'+delim+'id\n')
+    # Get random sampling from 1 to 5676 (not including 3576, which was the
     # second half of 3575)
-    games = random.sample(range(1,5653),100)   
+    games = random.sample(range(1,5676),100)   
     _id = 1
     
-    for num in range(1,3):
+    for num in range(1,5677):
         if num == 3576:
             continue
         with open("../data/showgame.php@game_id="+str(num)+".html",encoding='utf8') as fp:            
@@ -74,9 +76,10 @@ def main():
         
         i = 1        
         for clue in clues:
-            fj = False;
-            tb = False;
-            blank = False;
+            fj = False
+            tb = False
+            blank = False
+            incorrect = -1
             clue_str = game_id+delim+show_num+delim+show_year+delim
 ##            print(clue_str+" "+str(i))
             i = i+1
@@ -84,13 +87,13 @@ def main():
             if clue.find(id='clue_FJ'):
                 fj = True
             elif clue.find(id='clue_TB'):
-                tb = True;
+                tb = True
 
             ## Parse javascript for correct clue response            
             if not fj and not tb:
                 # check for blank
                 if len(clue.contents)==1:
-                    blank = True;
+                    blank = True
                 else:
                     js = clue.find('div')                    
                     js_str = js['onmouseover']
@@ -130,6 +133,28 @@ def main():
                     else: 
                         clue_response = str(clue_response.string)
 
+                    # Determine difficulty of question by counting number of wrong responses
+                    # or triple stumpers
+                    clue_incorrect = testSoup.find_all(class_='wrong')                    
+                    incorrect = len(clue_incorrect)
+                    tripleStumper = testSoup.find(class_='wrong', string = 'Triple Stumper')
+                    # Hardest, triple stumper, no guesses
+                    if not tripleStumper == None:
+                        if incorrect == 1:                            
+                            incorrect = 3 # No one guessed
+                        elif incorrect == 4:
+                            incorrect = 6 # Everyone guessed wrong
+                        elif incorrect == 3:
+                            incorrect = 5 # Two people guessed wrong, last person didn't guess                            
+                        elif incorrect == 2:
+                            incorrect = 4 # One person guessed wrong, no one else guessed
+
+                    # These cases are correctly contained in the incorrect count
+                    # Two people guessed wrong, last person got it right
+                    # One person guessed wrong, next person got it right
+                    #The last case is first person got it right                    
+                    
+
 ##                    clue_response = re.search(r'onse">.*</em',js_str).group()[6:-4]
 ##                    # clean clue response of backslashes
 ##                    clue_response = clue_response.replace('\\','')
@@ -168,6 +193,14 @@ def main():
                     clue_response = str(text_str)
                 else: 
                     clue_response = str(clue_response.string)
+
+                # Determine difficulty of question by counting number of wrong responses
+                # or triple stumpers
+                clue_incorrect = testSoup.find_all(class_='wrong')                    
+                incorrect = len(clue_incorrect)
+                # In FJ, there is no Triple Stumper designation, so the number of
+                # wrong elements should equal the number who got it wrong
+                
             else:
                 #it's a tiebreaker
                 clue_round = 'TB'
@@ -193,6 +226,11 @@ def main():
                     clue_response = str(text_str)
                 else: 
                     clue_response = str(clue_response.string)
+
+                # Determine difficulty of question by counting number of wrong responses
+                # or triple stumpers
+                clue_incorrect = testSoup.find_all(class_='wrong')                    
+                incorrect = len(clue_incorrect)         
 
                 
                     
@@ -257,7 +295,7 @@ def main():
                 else:
                     clue_str = clue_str +'n/a'+delim+'n/a'
 
-                clue_str = clue_str + delim + str(_id)
+                clue_str = clue_str + delim + str(incorrect) + delim + str(_id)
                 _id = _id + 1
                 
                 # write clue string to file

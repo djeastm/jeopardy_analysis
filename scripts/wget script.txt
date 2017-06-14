@@ -7,5 +7,6 @@ P puts it in a directory specified
 E appends .html to files without extensions
 
 
- for (( n=201; n<=5653 ; ++n)) do wget -q -P /j-archive/ -E http://www.j-archive.com/showgame.php?game_id="$n"; done
+ for (( n=5654; n<=5674 ; ++n)) do wget -q -P E:/Python/jeopardy_analysis/data/ -E http://www.j-archive.com/showgame.php?game_id="$n"; done
+
 
