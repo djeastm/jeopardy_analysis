@@ -6,12 +6,13 @@ import random
 def main():
     f = open('output_1_5653.csv','w')
     delim = '~'
-    f.write('game_id'+delim+'show_num'+delim+'year'+delim+'round'+delim+'category'+delim+'clue_num'+delim+'response'+delim+'text'+delim+'value'+delim+'clue_order\n')
+    f.write('game_id'+delim+'show_num'+delim+'year'+delim+'round'+delim+'category'+delim+'clue_num'+delim+'response'+delim+'text'+delim+'value'+delim+'clue_order'+delim+'id\n')
     # Get random sampling from 1 to 5653 (not including 3576, which was the
     # second half of 3575)
     games = random.sample(range(1,5653),100)   
+    _id = 1
     
-    for num in range(1,5654):
+    for num in range(1,3):
         if num == 3576:
             continue
         with open("../data/showgame.php@game_id="+str(num)+".html",encoding='utf8') as fp:            
@@ -205,7 +206,7 @@ def main():
             # clean out hyperlinks in responses
             
 
-            clue_str = clue_str + clue_response+delim
+            clue_str = clue_str + clue_response + delim
             
             ## Get clue text
             clue_text = clue.find(class_='clue_text')                
@@ -255,7 +256,10 @@ def main():
     ##                    print('FJ')                
                 else:
                     clue_str = clue_str +'n/a'+delim+'n/a'
-                    
+
+                clue_str = clue_str + delim + str(_id)
+                _id = _id + 1
+                
                 # write clue string to file
                 try:
                     f.write(clue_str+'\n')
