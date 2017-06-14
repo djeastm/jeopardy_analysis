@@ -7,10 +7,12 @@ def main():
     f = open('output_1_5676.csv','w')
     delim = '~'
     f.write('game_id'+delim+'show_num'+delim+'year'+delim+'round'+delim+'category'+
-            delim+'clue_num'+delim+'response'+delim+'text'+delim+'value'+delim+'clue_order'+
-            delim+'incorrect'+delim+'id\n')
+            delim+'clue_num'+delim+'response'+delim+'text'+delim+'value'+
+            delim+'dd_wager'+
+            delim+'clue_order'+delim+'incorrect'+delim+'id\n')
     # Get random sampling from 1 to 5676 (not including 3576, which was the
     # second half of 3575)
+    # Note that clue values doubled from show number 3966 on
     games = random.sample(range(1,5676),100)   
     _id = 1
     
@@ -273,18 +275,35 @@ def main():
                 clue_str = clue_str + clue_text +delim           
             
                 if not fj and not tb:
-                    ## get clue value for regular clues and placeholders for others
+                    ## get clue value and wager, if applicable
                     clue_value = clue.find(class_='clue_value')
                     if clue_value:
-                        clue_str = clue_str + clue_value.string + delim
+                        reg_val = clue_value.string[1:]
+                        clue_str = clue_str + reg_val + delim + '-1' + delim
                     elif clue.find(class_='clue_value_daily_double'):
-                        # it might be a daily double
-                        clue_str = clue_str + 'DD'+delim
+                        # daily double
+                        # Parse and save the wager amount
+                        dd_wager = clue.find(class_='clue_value_daily_double').string
+                        dd_wager = dd_wager[5:]
+                        dd_wager = re.sub(',','',dd_wager)
+                        # then find the expected value based off the location
+                        
+                        values = [-1, 100,200,300,400,500]
+                        expected_value = values[int(clue_num)]
+                        # Double expected value if DJ
+                        if clue_round == 'DJ':
+                            expected_value = expected_value * 2    
+                            
+                        # need to account for value change past show 3966
+                        if int(show_num) >= 3966:
+                            expected_value = expected_value * 2    
+
+                        clue_str = clue_str + str(expected_value) + delim + dd_wager + delim
     ##                elif clue.find(id='clue_FJ'):
     ##                    print('FJ')
                     else:
                         # it was never chosen
-                        clue_str = clue_str + 'NC'+delim
+                        clue_str = clue_str + '-1' + delim + '-1' + delim
 
                     ## get clue order number
                     clue_order_num = clue.find(class_='clue_order_number')
@@ -293,7 +312,7 @@ def main():
     ##                else:
     ##                    print('FJ')                
                 else:
-                    clue_str = clue_str +'n/a'+delim+'n/a'
+                    clue_str = clue_str +'n/a'+delim+'n/a'+delim+'n/a'
 
                 clue_str = clue_str + delim + str(incorrect) + delim + str(_id)
                 _id = _id + 1
