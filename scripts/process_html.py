@@ -169,7 +169,7 @@ def main():
 ##                fj = True
                 clue_round = 'FJ'
                 clue_cat = categories[12]
-                clue_num = 'n/a'
+                clue_num = '-1'
 
                 clue_str = clue_str + clue_round+delim+clue_cat+delim+clue_num+delim
 
@@ -312,7 +312,7 @@ def main():
     ##                else:
     ##                    print('FJ')                
                 else:
-                    clue_str = clue_str +'n/a'+delim+'n/a'+delim+'n/a'
+                    clue_str = clue_str +'-1'+delim+'-1'+delim+'-1'
 
                 clue_str = clue_str + delim + str(incorrect) + delim + str(_id)
                 _id = _id + 1
