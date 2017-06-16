@@ -207,7 +207,7 @@ def main():
                 #it's a tiebreaker
                 clue_round = 'TB'
                 clue_cat = categories[13]
-                clue_num = 'n/a'
+                clue_num = '-1'
 
                 clue_str = clue_str + clue_round+delim+clue_cat+delim+clue_num+delim
 
