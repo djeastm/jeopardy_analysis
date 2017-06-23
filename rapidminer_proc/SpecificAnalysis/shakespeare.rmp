@@ -94,8 +94,8 @@
         <parameter key="target_role" value="id"/>
         <list key="set_additional_roles"/>
       </operator>
-      <operator activated="true" class="retrieve" compatibility="7.5.001" expanded="true" height="68" name="Retrieve shakespeare" width="90" x="45" y="340">
-        <parameter key="repository_entry" value="//E Drive/Results/SpecificAnalysis/shakespeare"/>
+      <operator activated="true" class="retrieve" compatibility="7.5.001" expanded="true" height="68" name="Retrieve shakespeare" width="90" x="112" y="340">
+        <parameter key="repository_entry" value="//E Drive/Results/SpecificAnalysis/Shakespeare/shakespeare"/>
       </operator>
       <operator activated="true" class="set_macro" compatibility="7.5.001" expanded="true" height="82" name="Set Macro (2)" width="90" x="313" y="340">
         <parameter key="macro" value="play"/>
@@ -111,6 +111,9 @@
         <parameter key="filters_logic_and" value="false"/>
         <parameter key="filters_check_metadata" value="true"/>
       </operator>
+      <operator activated="true" class="store" compatibility="7.5.001" expanded="true" height="68" name="Store (2)" width="90" x="715" y="340">
+        <parameter key="repository_entry" value="//E Drive/Results/SpecificAnalysis/Shakespeare/all's well that ends well"/>
+      </operator>
       <connect from_op="Retrieve output_1_5676" from_port="output" to_op="Rename" to_port="example set input"/>
       <connect from_op="Rename" from_port="example set output" to_op="Set Role (2)" to_port="example set input"/>
       <connect from_op="Set Role (2)" from_port="example set output" to_op="Multiply" to_port="input"/>
@@ -123,7 +126,8 @@
       <connect from_op="Join" from_port="join" to_op="Store" to_port="input"/>
       <connect from_op="Retrieve shakespeare" from_port="output" to_op="Set Macro (2)" to_port="through 1"/>
       <connect from_op="Set Macro (2)" from_port="through 1" to_op="Filter Examples (2)" to_port="example set input"/>
-      <connect from_op="Filter Examples (2)" from_port="example set output" to_port="result 1"/>
+      <connect from_op="Filter Examples (2)" from_port="example set output" to_op="Store (2)" to_port="input"/>
+      <connect from_op="Store (2)" from_port="through" to_port="result 1"/>
       <portSpacing port="source_input 1" spacing="0"/>
       <portSpacing port="sink_result 1" spacing="0"/>
       <portSpacing port="sink_result 2" spacing="0"/>
