@@ -1,0 +1,373 @@
+<?xml version="1.0" encoding="UTF-8"?><process version="7.5.001">
+  <context>
+    <input/>
+    <output/>
+    <macros/>
+  </context>
+  <operator activated="true" class="process" compatibility="7.5.001" expanded="true" name="Process">
+    <parameter key="logverbosity" value="init"/>
+    <parameter key="random_seed" value="2001"/>
+    <parameter key="send_mail" value="never"/>
+    <parameter key="notification_email" value=""/>
+    <parameter key="process_duration_for_mail" value="30"/>
+    <parameter key="encoding" value="SYSTEM"/>
+    <process expanded="true">
+      <operator activated="false" class="retrieve" compatibility="7.5.001" expanded="true" height="68" name="Retrieve output_1_5676" width="90" x="45" y="34">
+        <parameter key="repository_entry" value="//E Drive/output_1_5676"/>
+      </operator>
+      <operator activated="false" class="set_role" compatibility="7.5.001" expanded="true" height="82" name="Set Role" width="90" x="45" y="136">
+        <parameter key="attribute_name" value="id"/>
+        <parameter key="target_role" value="id"/>
+        <list key="set_additional_roles"/>
+      </operator>
+      <operator activated="false" class="filter_examples" compatibility="7.5.001" expanded="true" height="103" name="Filter Examples (3)" width="90" x="45" y="238">
+        <parameter key="parameter_expression" value=""/>
+        <parameter key="condition_class" value="custom_filters"/>
+        <parameter key="invert_filter" value="true"/>
+        <list key="filters_list">
+          <parameter key="filters_entry_key" value="response.equals.="/>
+          <parameter key="filters_entry_key" value="text.equals.="/>
+          <parameter key="filters_entry_key" value="category.equals.="/>
+        </list>
+        <parameter key="filters_logic_and" value="false"/>
+        <parameter key="filters_check_metadata" value="true"/>
+      </operator>
+      <operator activated="false" class="generate_attributes" compatibility="7.5.001" expanded="true" height="82" name="Generate Attributes (6)" width="90" x="45" y="391">
+        <list key="function_descriptions">
+          <parameter key="lower_resp" value="lower(response)"/>
+          <parameter key="lower_text" value="lower(text)"/>
+        </list>
+        <parameter key="keep_all" value="true"/>
+      </operator>
+      <operator activated="false" class="replace" compatibility="7.5.001" expanded="true" height="82" name="Replace (2)" width="90" x="45" y="493">
+        <parameter key="attribute_filter_type" value="subset"/>
+        <parameter key="attribute" value=""/>
+        <parameter key="attributes" value="lower_resp"/>
+        <parameter key="use_except_expression" value="false"/>
+        <parameter key="value_type" value="nominal"/>
+        <parameter key="use_value_type_exception" value="false"/>
+        <parameter key="except_value_type" value="file_path"/>
+        <parameter key="block_type" value="single_value"/>
+        <parameter key="use_block_type_exception" value="false"/>
+        <parameter key="except_block_type" value="single_value"/>
+        <parameter key="invert_selection" value="false"/>
+        <parameter key="include_special_attributes" value="false"/>
+        <parameter key="replace_what" value="^(a )|^(the )"/>
+      </operator>
+      <operator activated="false" class="generate_attributes" compatibility="7.5.001" expanded="true" height="82" name="Set Stage" width="90" x="179" y="136">
+        <list key="function_descriptions">
+          <parameter key="stage" value="1"/>
+        </list>
+        <parameter key="keep_all" value="true"/>
+      </operator>
+      <operator activated="false" class="generate_empty_attribute" compatibility="7.5.001" expanded="true" height="82" name="Generate Empty Attribute" width="90" x="179" y="238">
+        <parameter key="name" value="first_target"/>
+        <parameter key="value_type" value="text"/>
+      </operator>
+      <operator activated="false" class="generate_empty_attribute" compatibility="7.5.001" expanded="true" height="82" name="Generate Empty Attribute (3)" width="90" x="179" y="340">
+        <parameter key="name" value="second_target"/>
+        <parameter key="value_type" value="text"/>
+      </operator>
+      <operator activated="false" class="store" compatibility="7.5.001" expanded="true" height="68" name="Store Lowered" width="90" x="179" y="493">
+        <parameter key="repository_entry" value="//E Drive/Results/TwistedTrivia/lowered_raw_data"/>
+      </operator>
+      <operator activated="true" class="retrieve" compatibility="7.5.001" expanded="true" height="68" name="Retrieve" width="90" x="45" y="595">
+        <parameter key="repository_entry" value="//E Drive/Results/TwistedTrivia/lowered_raw_data"/>
+      </operator>
+      <operator activated="true" class="remember" compatibility="7.5.001" expanded="true" height="68" name="Remember (2)" width="90" x="179" y="595">
+        <parameter key="name" value="raw_data"/>
+        <parameter key="io_object" value="ExampleSet"/>
+        <parameter key="store_which" value="1"/>
+        <parameter key="remove_from_process" value="true"/>
+      </operator>
+      <operator activated="true" class="sample" compatibility="7.5.001" expanded="true" height="82" name="Sample" width="90" x="313" y="493">
+        <parameter key="sample" value="absolute"/>
+        <parameter key="balance_data" value="false"/>
+        <parameter key="sample_size" value="100"/>
+        <parameter key="sample_ratio" value="0.1"/>
+        <parameter key="sample_probability" value="0.1"/>
+        <list key="sample_size_per_class"/>
+        <list key="sample_ratio_per_class"/>
+        <list key="sample_probability_per_class"/>
+        <parameter key="use_local_random_seed" value="true"/>
+        <parameter key="local_random_seed" value="1"/>
+      </operator>
+      <operator activated="true" class="loop_examples" compatibility="7.5.001" expanded="true" height="124" name="Loop Examples" width="90" x="380" y="34">
+        <parameter key="iteration_macro" value="example_1"/>
+        <process expanded="true">
+          <operator activated="true" class="extract_macro" compatibility="7.5.001" expanded="true" height="68" name="Extract Macro" width="90" x="45" y="34">
+            <parameter key="macro" value="first_target_macro"/>
+            <parameter key="macro_type" value="data_value"/>
+            <parameter key="statistics" value="average"/>
+            <parameter key="attribute_name" value="lower_resp"/>
+            <parameter key="example_index" value="%{example_1}"/>
+            <list key="additional_macros"/>
+          </operator>
+          <operator activated="true" class="recall" compatibility="7.5.001" expanded="true" height="68" name="Recall (2)" width="90" x="45" y="136">
+            <parameter key="name" value="raw_data"/>
+            <parameter key="io_object" value="ExampleSet"/>
+            <parameter key="remove_from_store" value="false"/>
+          </operator>
+          <operator activated="true" class="multiply" compatibility="7.5.001" expanded="true" height="103" name="Multiply" width="90" x="45" y="391"/>
+          <operator activated="true" class="filter_examples" compatibility="7.5.001" expanded="true" height="103" name="Filter Examples" width="90" x="179" y="238">
+            <parameter key="parameter_expression" value=""/>
+            <parameter key="condition_class" value="custom_filters"/>
+            <parameter key="invert_filter" value="false"/>
+            <list key="filters_list">
+              <parameter key="filters_entry_key" value="lower_text.contains. %{first_target_macro} "/>
+            </list>
+            <parameter key="filters_logic_and" value="true"/>
+            <parameter key="filters_check_metadata" value="true"/>
+          </operator>
+          <operator activated="true" class="branch" compatibility="7.5.001" expanded="true" height="103" name="Branch" width="90" x="447" y="238">
+            <parameter key="condition_type" value="min_examples"/>
+            <parameter key="condition_value" value="1"/>
+            <parameter key="expression" value=""/>
+            <parameter key="io_object" value="ExampleSet"/>
+            <parameter key="return_inner_output" value="true"/>
+            <process expanded="true">
+              <operator activated="true" class="extract_macro" compatibility="7.5.001" expanded="true" height="68" name="Extract Macro (2)" width="90" x="112" y="34">
+                <parameter key="macro" value="second_target_macro"/>
+                <parameter key="macro_type" value="data_value"/>
+                <parameter key="statistics" value="average"/>
+                <parameter key="attribute_name" value="lower_resp"/>
+                <parameter key="example_index" value="1"/>
+                <list key="additional_macros"/>
+              </operator>
+              <operator activated="true" class="set_data" compatibility="7.5.001" expanded="true" height="82" name="Set Data (2)" width="90" x="246" y="34">
+                <parameter key="example_index" value="1"/>
+                <parameter key="count_backwards" value="false"/>
+                <parameter key="attribute_name" value="stage"/>
+                <parameter key="value" value="2"/>
+                <list key="additional_values">
+                  <parameter key="first_target" value="%{first_target_macro}"/>
+                </list>
+              </operator>
+              <operator activated="true" class="filter_example_range" compatibility="7.5.001" expanded="true" height="82" name="Filter Example Range" width="90" x="380" y="34">
+                <parameter key="first_example" value="1"/>
+                <parameter key="last_example" value="1"/>
+                <parameter key="invert_filter" value="false"/>
+              </operator>
+              <operator activated="true" class="filter_examples" compatibility="7.5.001" expanded="true" height="103" name="Filter Examples (2)" width="90" x="112" y="136">
+                <parameter key="parameter_expression" value=""/>
+                <parameter key="condition_class" value="custom_filters"/>
+                <parameter key="invert_filter" value="false"/>
+                <list key="filters_list">
+                  <parameter key="filters_entry_key" value="lower_text.contains. %{second_target_macro} "/>
+                </list>
+                <parameter key="filters_logic_and" value="true"/>
+                <parameter key="filters_check_metadata" value="true"/>
+              </operator>
+              <operator activated="true" class="filter_example_range" compatibility="7.5.001" expanded="true" height="82" name="Filter Example Range (2)" width="90" x="246" y="238">
+                <parameter key="first_example" value="1"/>
+                <parameter key="last_example" value="2"/>
+                <parameter key="invert_filter" value="false"/>
+              </operator>
+              <operator activated="true" class="map" compatibility="7.5.001" expanded="true" height="82" name="Map" width="90" x="246" y="391">
+                <parameter key="attribute_filter_type" value="single"/>
+                <parameter key="attribute" value="stage"/>
+                <parameter key="attributes" value=""/>
+                <parameter key="use_except_expression" value="false"/>
+                <parameter key="value_type" value="attribute_value"/>
+                <parameter key="use_value_type_exception" value="false"/>
+                <parameter key="except_value_type" value="time"/>
+                <parameter key="block_type" value="attribute_block"/>
+                <parameter key="use_block_type_exception" value="false"/>
+                <parameter key="except_block_type" value="value_matrix_row_start"/>
+                <parameter key="invert_selection" value="false"/>
+                <parameter key="include_special_attributes" value="false"/>
+                <list key="value_mappings"/>
+                <parameter key="replace_what" value="1"/>
+                <parameter key="replace_by" value="3"/>
+                <parameter key="consider_regular_expressions" value="false"/>
+                <parameter key="add_default_mapping" value="false"/>
+              </operator>
+              <operator activated="true" class="loop_examples" compatibility="7.5.001" expanded="true" height="82" name="Loop Examples (3)" width="90" x="380" y="391">
+                <parameter key="iteration_macro" value="example"/>
+                <process expanded="true">
+                  <operator activated="true" class="set_data" compatibility="7.5.001" expanded="true" height="82" name="Set Data" width="90" x="112" y="34">
+                    <parameter key="example_index" value="%{example}"/>
+                    <parameter key="count_backwards" value="false"/>
+                    <parameter key="attribute_name" value="second_target"/>
+                    <parameter key="value" value="%{second_target_macro}"/>
+                    <list key="additional_values">
+                      <parameter key="stage" value="3"/>
+                      <parameter key="first_target" value="%{first_target_macro}"/>
+                    </list>
+                  </operator>
+                  <connect from_port="example set" to_op="Set Data" to_port="example set input"/>
+                  <connect from_op="Set Data" from_port="example set output" to_port="example set"/>
+                  <portSpacing port="source_example set" spacing="0"/>
+                  <portSpacing port="sink_example set" spacing="0"/>
+                  <portSpacing port="sink_output 1" spacing="0"/>
+                </process>
+              </operator>
+              <connect from_port="condition" to_op="Extract Macro (2)" to_port="example set"/>
+              <connect from_port="input 1" to_op="Filter Examples (2)" to_port="example set input"/>
+              <connect from_op="Extract Macro (2)" from_port="example set" to_op="Set Data (2)" to_port="example set input"/>
+              <connect from_op="Set Data (2)" from_port="example set output" to_op="Filter Example Range" to_port="example set input"/>
+              <connect from_op="Filter Example Range" from_port="example set output" to_port="input 1"/>
+              <connect from_op="Filter Examples (2)" from_port="example set output" to_op="Filter Example Range (2)" to_port="example set input"/>
+              <connect from_op="Filter Example Range (2)" from_port="example set output" to_op="Map" to_port="example set input"/>
+              <connect from_op="Map" from_port="example set output" to_op="Loop Examples (3)" to_port="example set"/>
+              <connect from_op="Loop Examples (3)" from_port="example set" to_port="input 2"/>
+              <portSpacing port="source_condition" spacing="0"/>
+              <portSpacing port="source_input 1" spacing="0"/>
+              <portSpacing port="source_input 2" spacing="0"/>
+              <portSpacing port="sink_input 1" spacing="0"/>
+              <portSpacing port="sink_input 2" spacing="0"/>
+              <portSpacing port="sink_input 3" spacing="0"/>
+            </process>
+            <process expanded="true">
+              <portSpacing port="source_condition" spacing="0"/>
+              <portSpacing port="source_input 1" spacing="0"/>
+              <portSpacing port="source_input 2" spacing="0"/>
+              <portSpacing port="sink_input 1" spacing="0"/>
+              <portSpacing port="sink_input 2" spacing="0"/>
+              <portSpacing port="sink_input 3" spacing="0"/>
+            </process>
+          </operator>
+          <connect from_port="example set" to_op="Extract Macro" to_port="example set"/>
+          <connect from_op="Extract Macro" from_port="example set" to_port="example set"/>
+          <connect from_op="Recall (2)" from_port="result" to_op="Multiply" to_port="input"/>
+          <connect from_op="Multiply" from_port="output 1" to_op="Filter Examples" to_port="example set input"/>
+          <connect from_op="Multiply" from_port="output 2" to_op="Branch" to_port="input 1"/>
+          <connect from_op="Filter Examples" from_port="example set output" to_op="Branch" to_port="condition"/>
+          <connect from_op="Branch" from_port="input 1" to_port="output 1"/>
+          <connect from_op="Branch" from_port="input 2" to_port="output 2"/>
+          <portSpacing port="source_example set" spacing="0"/>
+          <portSpacing port="sink_example set" spacing="0"/>
+          <portSpacing port="sink_output 1" spacing="0"/>
+          <portSpacing port="sink_output 2" spacing="0"/>
+          <portSpacing port="sink_output 3" spacing="0"/>
+          <description align="center" color="yellow" colored="false" height="105" resized="false" width="180" x="420" y="106">Filtered to only get &amp;quot; thing &amp;quot;, not &amp;quot;thing&amp;quot; inside text.</description>
+        </process>
+      </operator>
+      <operator activated="true" class="append" compatibility="7.5.001" expanded="true" height="124" name="Append" width="90" x="380" y="238">
+        <parameter key="datamanagement" value="double_array"/>
+        <parameter key="data_management" value="auto"/>
+        <parameter key="merge_type" value="all"/>
+      </operator>
+      <operator activated="true" class="order_attributes" compatibility="7.5.001" expanded="true" height="82" name="Reorder Attributes" width="90" x="380" y="391">
+        <parameter key="sort_mode" value="user specified"/>
+        <parameter key="attribute_ordering" value="id|stage|first_target|second_target|response|category|text|clue_num|clue_order|dd_wager|game_id|incorrect|round|show_num|value|year|lower_text|lower_resp"/>
+        <parameter key="use_regular_expressions" value="false"/>
+        <parameter key="handle_unmatched" value="append"/>
+        <parameter key="sort_direction" value="ascending"/>
+      </operator>
+      <operator activated="true" class="multiply" compatibility="7.5.001" expanded="true" height="103" name="Multiply (2)" width="90" x="514" y="391"/>
+      <operator activated="true" class="remember" compatibility="7.5.001" expanded="true" height="68" name="Remember" width="90" x="648" y="391">
+        <parameter key="name" value="trivia_topics"/>
+        <parameter key="io_object" value="ExampleSet"/>
+        <parameter key="store_which" value="1"/>
+        <parameter key="remove_from_process" value="true"/>
+      </operator>
+      <operator activated="true" class="aggregate" compatibility="7.5.001" expanded="true" height="82" name="Aggregate" width="90" x="514" y="544">
+        <parameter key="use_default_aggregation" value="true"/>
+        <parameter key="attribute_filter_type" value="single"/>
+        <parameter key="attribute" value="first_target"/>
+        <parameter key="attributes" value=""/>
+        <parameter key="use_except_expression" value="false"/>
+        <parameter key="value_type" value="attribute_value"/>
+        <parameter key="use_value_type_exception" value="false"/>
+        <parameter key="except_value_type" value="time"/>
+        <parameter key="block_type" value="attribute_block"/>
+        <parameter key="use_block_type_exception" value="false"/>
+        <parameter key="except_block_type" value="value_matrix_row_start"/>
+        <parameter key="invert_selection" value="false"/>
+        <parameter key="include_special_attributes" value="false"/>
+        <parameter key="default_aggregation_function" value="count"/>
+        <list key="aggregation_attributes"/>
+        <parameter key="group_by_attributes" value="first_target"/>
+        <parameter key="count_all_combinations" value="false"/>
+        <parameter key="only_distinct" value="false"/>
+        <parameter key="ignore_missings" value="true"/>
+      </operator>
+      <operator activated="true" class="filter_examples" compatibility="7.5.001" expanded="true" height="103" name="Filter Examples (5)" width="90" x="514" y="646">
+        <parameter key="parameter_expression" value=""/>
+        <parameter key="condition_class" value="custom_filters"/>
+        <parameter key="invert_filter" value="false"/>
+        <list key="filters_list">
+          <parameter key="filters_entry_key" value="count(first_target).gt.2"/>
+        </list>
+        <parameter key="filters_logic_and" value="true"/>
+        <parameter key="filters_check_metadata" value="true"/>
+      </operator>
+      <operator activated="true" class="loop_examples" compatibility="7.5.001" expanded="true" height="103" name="Loop Examples (2)" width="90" x="648" y="646">
+        <parameter key="iteration_macro" value="example"/>
+        <process expanded="true">
+          <operator activated="true" class="extract_macro" compatibility="7.5.001" expanded="true" height="68" name="Extract Macro (3)" width="90" x="45" y="34">
+            <parameter key="macro" value="first_target_1"/>
+            <parameter key="macro_type" value="data_value"/>
+            <parameter key="statistics" value="average"/>
+            <parameter key="attribute_name" value="first_target"/>
+            <parameter key="example_index" value="%{example}"/>
+            <list key="additional_macros"/>
+          </operator>
+          <operator activated="true" class="recall" compatibility="7.5.001" expanded="true" height="68" name="Recall" width="90" x="246" y="136">
+            <parameter key="name" value="trivia_topics"/>
+            <parameter key="io_object" value="ExampleSet"/>
+            <parameter key="remove_from_store" value="false"/>
+          </operator>
+          <operator activated="false" class="generate_attributes" compatibility="7.5.001" expanded="true" height="82" name="Generate Attributes (8)" width="90" x="380" y="136">
+            <list key="function_descriptions">
+              <parameter key="lower_first_target" value="lower(first_target)"/>
+            </list>
+            <parameter key="keep_all" value="true"/>
+          </operator>
+          <operator activated="true" class="filter_examples" compatibility="7.5.001" expanded="true" height="103" name="Filter Examples (4)" width="90" x="514" y="136">
+            <parameter key="parameter_expression" value=""/>
+            <parameter key="condition_class" value="custom_filters"/>
+            <parameter key="invert_filter" value="false"/>
+            <list key="filters_list">
+              <parameter key="filters_entry_key" value="first_target.equals.%{first_target_1}"/>
+              <parameter key="filters_entry_key" value="lower_resp.equals.%{first_target_1}"/>
+            </list>
+            <parameter key="filters_logic_and" value="false"/>
+            <parameter key="filters_check_metadata" value="true"/>
+          </operator>
+          <connect from_port="example set" to_op="Extract Macro (3)" to_port="example set"/>
+          <connect from_op="Recall" from_port="result" to_op="Filter Examples (4)" to_port="example set input"/>
+          <connect from_op="Filter Examples (4)" from_port="example set output" to_port="output 1"/>
+          <portSpacing port="source_example set" spacing="0"/>
+          <portSpacing port="sink_example set" spacing="0"/>
+          <portSpacing port="sink_output 1" spacing="0"/>
+          <portSpacing port="sink_output 2" spacing="0"/>
+        </process>
+      </operator>
+      <operator activated="true" class="append" compatibility="7.5.001" expanded="true" height="82" name="Append (2)" width="90" x="849" y="646">
+        <parameter key="datamanagement" value="double_array"/>
+        <parameter key="data_management" value="auto"/>
+        <parameter key="merge_type" value="all"/>
+      </operator>
+      <operator activated="true" class="store" compatibility="7.5.001" expanded="true" height="68" name="Store" width="90" x="937" y="391">
+        <parameter key="repository_entry" value="//E Drive/Results/TwistedTrivia/twisted_trivia_candidates"/>
+      </operator>
+      <connect from_op="Retrieve output_1_5676" from_port="output" to_op="Set Role" to_port="example set input"/>
+      <connect from_op="Set Role" from_port="example set output" to_op="Filter Examples (3)" to_port="example set input"/>
+      <connect from_op="Filter Examples (3)" from_port="example set output" to_op="Generate Attributes (6)" to_port="example set input"/>
+      <connect from_op="Generate Attributes (6)" from_port="example set output" to_op="Replace (2)" to_port="example set input"/>
+      <connect from_op="Replace (2)" from_port="example set output" to_op="Set Stage" to_port="example set input"/>
+      <connect from_op="Set Stage" from_port="example set output" to_op="Generate Empty Attribute" to_port="example set input"/>
+      <connect from_op="Generate Empty Attribute" from_port="example set output" to_op="Generate Empty Attribute (3)" to_port="example set input"/>
+      <connect from_op="Retrieve" from_port="output" to_op="Remember (2)" to_port="store"/>
+      <connect from_op="Remember (2)" from_port="stored" to_op="Sample" to_port="example set input"/>
+      <connect from_op="Sample" from_port="example set output" to_op="Loop Examples" to_port="example set"/>
+      <connect from_op="Loop Examples" from_port="example set" to_op="Append" to_port="example set 1"/>
+      <connect from_op="Loop Examples" from_port="output 1" to_op="Append" to_port="example set 2"/>
+      <connect from_op="Loop Examples" from_port="output 2" to_op="Append" to_port="example set 3"/>
+      <connect from_op="Append" from_port="merged set" to_op="Reorder Attributes" to_port="example set input"/>
+      <connect from_op="Reorder Attributes" from_port="example set output" to_op="Multiply (2)" to_port="input"/>
+      <connect from_op="Multiply (2)" from_port="output 1" to_op="Aggregate" to_port="example set input"/>
+      <connect from_op="Multiply (2)" from_port="output 2" to_op="Remember" to_port="store"/>
+      <connect from_op="Aggregate" from_port="example set output" to_op="Filter Examples (5)" to_port="example set input"/>
+      <connect from_op="Filter Examples (5)" from_port="example set output" to_op="Loop Examples (2)" to_port="example set"/>
+      <connect from_op="Loop Examples (2)" from_port="output 1" to_op="Append (2)" to_port="example set 1"/>
+      <connect from_op="Append (2)" from_port="merged set" to_op="Store" to_port="input"/>
+      <connect from_op="Store" from_port="through" to_port="result 1"/>
+      <portSpacing port="source_input 1" spacing="0"/>
+      <portSpacing port="sink_result 1" spacing="0"/>
+      <portSpacing port="sink_result 2" spacing="0"/>
+    </process>
+  </operator>
+</process>
